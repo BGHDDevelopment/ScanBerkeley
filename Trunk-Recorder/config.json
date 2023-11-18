@@ -1,0 +1,67 @@
+{
+    "ver": 2,
+    "sources": [
+        {
+            "center": 769.965625e6,
+            "rate": 2048000,
+            "error": 2095,
+            "gain": 40,
+            "digitalRecorders": 9,
+            "driver": "osmosdr",
+            "device": "rtl=0"
+        },
+		{
+            "center": 772.09465e6,
+            "rate": 2048000,
+            "error": 2095,
+            "gain": 40,
+            "digitalRecorders": 9,
+            "driver": "osmosdr",
+            "device": "rtl=1"
+        },
+        {
+            "center": 773.978125e6,
+            "rate": 1800000,
+            "error": 2095,
+            "gain": 40,
+            "digitalRecorders": 0,
+            "driver": "osmosdr",
+            "device": "rtl=2"
+        }
+    ],
+    "systems": [
+        {
+            "control_channels": [
+                773.46875e6,
+                773.74375e6,
+                774.21875e6,
+                774.49375e6
+            ],
+            "type": "p25",
+            "shortName": "Berkeley",
+            "talkgroupsFile": "talkgroups.csv",
+            "unitTagsFile": "UnitTags.csv",
+			"recordUnknown": "false",
+            "squelch": -50,
+            "modulation": "qpsk",
+            "logLevel": "debug",
+			"audioArchive": true,
+			"callLog": true,
+			"uploadScript": "/home/stephanbh/trunk-build/transcribe.sh"
+        }
+    ],
+    "plugins": [
+        {
+            "name": "rdioscanner_uploader",
+            "library": "librdioscanner_uploader.so",
+            "server": "http://127.0.0.1:3000",
+            "systems": [
+                {
+                    "shortName": "Berkeley",
+                    "apiKey": "REDACTED_CHANGE_ME",
+                    "systemId": 1
+                }
+            ]
+        }
+    ]
+}

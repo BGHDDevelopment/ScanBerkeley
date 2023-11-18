@@ -1,0 +1,18 @@
+DEC,HEX,Mode,Alpha Tag,Description,Tag,Group,Priority
+2105,839,D,Berkeley FD1,Fire Dispatch 1,Fire Dispatch,Berkeley,1
+2106,83a,D,Berkeley FD2,Fire Dispatch 2,Fire Dispatch,Berkeley,1
+2112,840,D,Berkeley FD Emer,Fire Emergency,Emergency Ops,Berkeley,1
+2671,a6f,D,ACFD Command 11,Command 11 - Berkeley,Fire-Tac,Alameda County Fire,1
+2672,a70,D,ACFD Command 12,Command 12 - Berkeley,Fire-Tac,Alameda County Fire,1
+2691,a83,D,ACFD Tac 31,Tac 31 - Berkeley,Fire-Tac,Alameda County Fire,1
+2692,a84,D,ACFD Tac 32,Tac 32 - Berkeley,Fire-Tac,Alameda County Fire,1
+2711,a97,D,ACFD Tac 51,Tac 51 - Berkeley,Fire-Tac,Alameda County Fire,1
+2712,a98,D,ACFD Tac 52,Tac 52 - Berkeley,Fire-Tac,Alameda County Fire,1
+3105,c21,T,Berkeley PD1,Police Dispatch,Law Dispatch,Berkeley,1
+3106,c22,T,Berkeley PD2,Police Ch 2,Law Tac,Berkeley,1
+3108,c24,T,Berkeley PD4,Police Ch 4,Law Tac,Berkeley,1
+3110,c26,T,Berkeley PD6,Police Investigations 1,Law Tac,Berkeley,1
+3605,e15,T,UCB PD1 DSP,Police Dispatch,Law Dispatch,UC Berkeley,1
+3606,e16,D,UCB PD2,Police Ch 2,Law Tac,UC Berkeley,1
+3608,e18,D,UCB PD4 ENF,Police Enforcement,Law Tac,UC Berkeley,1
+3609,e19,D,UCB PD5,POLICE TAC,Law Tac,UC Berkeley,1

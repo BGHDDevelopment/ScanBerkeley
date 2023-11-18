@@ -1,0 +1,72 @@
+{
+    "^3105@Berkeley$|^3605@Berkeley$": {
+        "channels": [
+            "slack://REDACTED_CHANGE"
+        ],
+        "append_talkgroup": true,
+        "alerts": [
+            {
+                "channels": [
+                    "slack://REDACTED_CHANGE",
+					"https://REDACTED_CHANGE",
+					"psafers://REDACTED_CHANGE"
+                ],
+                "keywords": [
+                    "211",
+                    "211 via gun",
+					"211 strong arm",
+					"2-11",
+                    "417",
+                    "215",
+					"245",
+					"brandishing",
+					"loud report",
+					"stabbing",
+					"shooting",
+					"gunshot",
+					"code-33",
+					"pursuit",
+					"code-3",
+					"failure to yield",
+					"active shooter",
+					"gun",
+					"187",
+					"shot spotter",
+					"handgun",
+					"water rescue",
+					"strong arm",
+					"1199",
+					"officer needs help"
+                ]
+            }
+        ]
+    },
+    "^2105@Berkeley$": {
+        "channels": [
+            "slack://REDACTED_CHANGE"
+        ],
+        "append_talkgroup": true,
+        "alerts": [
+            {
+                "channels": [
+                    "slack://REDACTED_CHANGE",
+					"https://REDACTED_CHANGE",
+					"psafers://REDACTED_CHANGE"
+                ],
+                "keywords": [
+                    "Structure Fire",
+                    "Working Fire",
+                    "Vegetation Fire",
+                    "Freeway Incident",
+					"Freeway Accident",
+					"Freeway Response",
+					"Water Rescue",
+					"shots fired",
+					"GSW",
+					"Stabbing",
+					"Hazmat"
+                ]
+            }
+        ]
+    }
+}

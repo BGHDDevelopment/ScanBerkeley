@@ -1,0 +1,280 @@
+<div class="row mb-2 {{if (eq this.hasAccess undefined) "d-none" ""}}">
+  <div class="col-lg-3 d-none d-lg-block">
+    <h2 class="fs-4">Filters</h2>
+  </div>
+  <div id="searchbox" class="col-lg mb-2 mb-lg-0"></div>
+  <div id="sort-by" class="col-lg-auto col"></div>
+  <div id="hits-per-page" class="col-lg-auto col"></div>
+  <div id="option-buttons" class="col-md-auto d-flex justify-content-end">
+    <button type="button" class="btn btn-primary d-lg-none" data-bs-toggle="collapse" data-bs-target="#filters" aria-controls="filters">
+      <span class="visually-hidden">Filters</span>
+      <FaIcon @icon="filter" />
+    </button>
+    {{#if this.hasAccess}}
+    {{#if this.session.user.patreon_tier.features.transcript_notifications}}
+    <button type="button" class="btn btn-info text-bg-info" data-bs-toggle="modal" data-bs-target="#transcriptNotifications" aria-controls="transcriptNotifications">
+      <span class="visually-hidden">Notify Me</span>
+      <FaIcon @icon="bell" />
+    </button>
+    <TranscriptNotificationModal />
+    {{!-- <LinkTo @route="notifications" class="btn btn-info text-white">
+      <span class="visually-hidden">Notify Me</span>
+      <FaIcon @icon="bell" />
+    </LinkTo> --}}
+    {{/if}}
+    <div id="refresh-buttons" class="btn-group" role="group" aria-label="Refresh buttons">
+      <button type="button" class="btn btn-primary" {{on "click" this.refresh}}>
+        <span class="visually-hidden">Refresh</span>
+        <FaIcon @icon="redo" class="{{if this.autoRefreshInterval "spin" ""}}" />
+      </button>
+      <button type="button" class="btn btn-outline-primary {{if this.autoRefreshInterval "active" ""}}" data-bs-toggle="button" {{on "click" this.toggleAutoRefresh}}>
+        Auto-Refresh
+      </button>
+    </div>
+    {{/if}}
+    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#settings" aria-controls="settings">
+      <span class="visually-hidden">Settings</span>
+      <FaIcon @icon="gear" />
+    </button>
+  </div>
+</div>
+
+{{#if (eq this.hasAccess undefined)}}
+<p {{did-insert this.setupSearch}}>Logging in...</p>
+{{/if}}
+<div class="search-panel row {{if (eq this.hasAccess undefined) "d-none" ""}}">
+  <div class="search-panel__filters col-lg-3">
+    <div id="filters" class="collapse">
+      <h2 id="filtersHeading" class="d-lg-none">Filters</h2>
+      <div class="row mb-4">
+        <div id="clear-refinements" class="col"></div>
+        <div id="reset-refinements" class="col">
+          <button type="button" class="ais-ClearRefinements-button" {{on "click" this.resetFilters}}><span>Default filters</span></button>
+        </div>
+      </div>
+      <div class="accordion accordion-flush" id="filterOptionsAccordion">
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="dept-heading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#dept-collapse" aria-expanded="false" aria-controls="dept-collapse">
+              Departments
+            </button>
+          </h3>
+          <div id="dept-collapse" class="accordion-collapse collapse show" aria-labelledby="dept-heading">
+            <div id="dept-menu" class="accordion-body"></div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="tg-heading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#tg-collapse" aria-expanded="false" aria-controls="tg-collapse">
+              Talkgroups
+            </button>
+          </h3>
+          <div id="tg-collapse" class="accordion-collapse collapse show" aria-labelledby="tg-heading">
+            <div id="tg-menu" class="accordion-body"></div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="tg-type-heading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#tg-type-collapse" aria-expanded="false" aria-controls="tg-type-collapse">
+              Talkgroup Type
+            </button>
+          </h3>
+          <div id="tg-type-collapse" class="accordion-collapse collapse show" aria-labelledby="tg-type-heading">
+            <div id="tg-type-menu" class="accordion-body"></div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="units-heading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#units-collapse" aria-expanded="false" aria-controls="units-collapse">
+              Units
+            </button>
+          </h3>
+          <div id="units-collapse" class="accordion-collapse collapse show" aria-labelledby="units-heading">
+            <div id="units-menu" class="accordion-body"></div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="radios-heading">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#radios-collapse" aria-expanded="false" aria-controls="radios-collapse">
+              Radio IDs
+            </button>
+          </h3>
+          <div id="radios-collapse" class="accordion-collapse collapse" aria-labelledby="radios-heading">
+            <div id="radios-menu" class="accordion-body"></div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="srclist-heading">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#srclist-collapse" aria-expanded="false" aria-controls="srclist-collapse">
+              Sources
+            </button>
+          </h3>
+          <div id="srclist-collapse" class="accordion-collapse collapse" aria-labelledby="srclist-heading">
+            <div id="srclist-menu" class="accordion-body"></div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="calltime-heading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#time-input-collapse" aria-expanded="false" aria-controls="time-input-collapse">
+              Call Time
+            </button>
+          </h3>
+          <div id="time-input-collapse" class="accordion-collapse collapse show" aria-labelledby="calltime-heading">
+            <div id="time-input" class="accordion-body">
+              <div class="col">
+                <label for="minStartTime">From Time</label>
+                <div class="input-group date">
+                  <EmberFlatpickr name="minStartTime" @id="minStartTime" @allowInput={{true}} class="form-control" @defaultDate={{this.flatpickrOptions.minDefaultDate}} @enableTime={{this.flatpickrOptions.enableTime}} @dateFormat={{this.flatpickrOptions.dateFormat}} @date={{this.minStartTime}} @onChange={{null}} @onClose={{this.setStartTimeRange}} @altInput={{this.flatpickrOptions.altInput}} @altFormat={{this.flatpickrOptions.altFormat}} />
+                  <span class="input-group-text"><FaIcon @icon="calendar" /></span>
+                </div>
+              </div>
+              <div class="col">
+                <label for="maxStartTime">To Time</label>
+                <div class="input-group date">
+                  <EmberFlatpickr name="maxStartTime" @id="maxStartTime" @allowInput={{true}} class="form-control" @defaultDate={{this.flatpickrOptions.maxDefaultDate}} @enableTime={{this.flatpickrOptions.enableTime}} @dateFormat={{this.flatpickrOptions.dateFormat}} @date={{this.maxStartTime}} @onChange={{null}} @onClose={{this.setStartTimeRange}} @altInput={{this.flatpickrOptions.altInput}} @altFormat={{this.flatpickrOptions.altFormat}} />
+                  <span class="input-group-text"><FaIcon @icon="calendar" /></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h3 class="accordion-header" id="system-heading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#system-collapse" aria-expanded="false" aria-controls="system-collapse">
+              Radio System
+            </button>
+          </h3>
+          <div id="system-collapse" class="accordion-collapse collapse show" aria-labelledby="system-heading">
+            <div id="system-menu" class="accordion-body"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="search-panel__results col">
+    <div id="settings" class="collapse row justify-content-between mb-1">
+      <div class="col-md-auto">
+        <div class="form-check form-switch mt-2 mb-1">
+          <Input class="form-check-input" @type="checkbox" role="switch" id="waveform-toggle" @checked={{this.useMediaPlayerComponent}} aria-checked="{{this.useMediaPlayerComponent}}" />
+          <label class="form-check-label" for="waveform-toggle">Show waveform when playing audio</label>
+        </div>
+      </div>
+    </div>
+    <div id="current-refinements" class="mt-2"></div>
+    <div id="stats" class="mb-1"></div>
+    {{#if this.onTranscriptMapPage}}
+    <h5>Experimental map of radio calls</h5>
+    {{#if (and this.hasAccess (not this.session.user.patreon_tier.features.transcript_geosearch))}}
+    <p class="text-danger">Sorry, you must be at the Captain tier or above on Patreon to access the map of calls (currently an experimental feature).</p>
+    {{/if}}
+    <div id="geo-search" class="ais-GeoSearch-map mb-1"></div>
+    {{/if}}
+    <div id="hits" class="ais-Hits">
+      <ol class="ais-Hits-list">
+        {{#each this.hits key="id" as |hit|}}
+        <li id="hit-{{hit.id}}" class="ais-Hits-item{{if (eq hit.id this.selectedHit) " selected" ""}}" {{did-insert this.didInsertHit}}>
+          <div class="row">
+            <div class="col">
+              <h4 class="fs-5">
+                {{#if (eq hit.id this.selectedHit)}}
+                <a class="btn btn-sm btn-warning" href="{{hit.contextUrl}}" {{on "click" (fn this.getContext hit)}}>
+                  <FaIcon @icon="star" />
+                </a>
+                {{else}}
+                <a class="btn btn-sm btn-primary" href="{{hit.contextUrl}}" {{on "click" (fn this.getContext hit)}}>
+                  <FaIcon @icon="filter" />
+                </a>
+                {{/if}}
+                {{hit.talkgroup_tag}}
+              </h4>
+              <h5 class="fs-6">{{hit.talkgroup_group}} - {{hit.talkgroup_description}}</h5>
+              <p>
+                <strong>
+                  <a href="{{hit.permalink}}"><FaIcon @icon="link" /> {{hit.start_time_string}}</a> ({{hit.relative_time}})
+                </strong>
+                {{hit.time_warning}}
+              </p>
+              <p>
+                <button type="button" class="btn btn-sm btn-success" {{on "click" (fn this.playAudio hit)}}>
+                  <FaIcon @icon="play" /><span class="visually-hidden">Play Audio</span>
+                </button>
+                <span class="badge text-bg-light me-1">
+                  Duration: {{hit.call_length}}s
+                </span>
+                <span class="badge text-bg-secondary me-1">
+                  TG {{hit.talkgroup}}
+                </span>
+                <span class="badge text-bg-{{hit.talkgroup_group_tag_color}} me-1">
+                  {{hit.talkgroup_group_tag}}
+                </span>
+                <span
+                  class="badge text-bg-secondary me-1"
+                >
+                  {{hit.audio_type}}
+                </span>
+                {{#if hit.encrypted}}
+                <span class="badge text-bg-danger me-1" data-bs-toggle="tooltip" title="From an official Broadcastify.com stream of an encrypted channel">
+                  Encrypted / Delayed 30mins
+                </span>
+                {{/if}}
+                {{#if (eq this.session.user.id 1)}}
+                <button
+                  class="badge text-bg-light btn btn-sm btn-light"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#metadata-{{hit.id}}"
+                >
+                  Raw Data
+                </button>
+                {{/if}}
+              </p>
+              {{#if (and hit.showPlayer (not this.useMediaPlayerComponent))}}
+              <audio
+                id="call-audio-{{hit.id}}"
+                class="call-audio"
+                src="{{hit.raw_audio_url}}"
+                controls
+                autoplay
+              ></audio>
+              {{/if}}
+              <p>
+                {{#each hit.raw_transcript as |segment|}}
+                  {{#if (get segment "0")}}
+                  {{!-- template-lint-disable no-triple-curlies --}}
+                  <a href="{{get segment "0.filter_link"}}" title="Radio ID {{get segment "0.src"}}" {{on "click" (fn this.filterSrc (get segment "0") hit)}}>{{{get segment "0.label"}}}</a>:
+                  {{/if}}
+                  {{!-- template-lint-disable no-triple-curlies --}}
+                  {{{get segment "1"}}}<br>
+                {{/each}}
+              </p>
+            </div>
+            {{#if (and this.useMediaPlayerComponent hit.showPlayer)}}
+            <div class="col-lg-5">
+              <div id="call-audio-{{hit.id}}" class="media-player-container">
+                <MediaPlayer @src="{{hit.raw_audio_url}}" @type="audio/mpeg" @idSuffix="-{{hit.id}}" @hideZoom="true" @autoplay="true" />
+              </div>
+            </div>
+            {{/if}}
+          </div>
+          {{#if (eq this.session.user.id 1)}}
+          <div class="modal fade metadata-modal" id="metadata-{{hit.id}}" tabindex="-1" aria-labelledby="metadata-modal-heading-{{hit.id}}" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="metadata-modal-heading-{{hit.id}}">Raw Result Data</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <pre>{{hit.json}}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+          {{/if}}
+        </li>
+        {{/each}}
+      </ol>
+    </div>
+    <div id="pagination" class="mt-3"></div>
+  </div>
+</div>

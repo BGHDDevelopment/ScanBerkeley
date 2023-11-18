@@ -1,0 +1,33 @@
+<h2 id="channel-form-heading" class="fs-4 mt-4">{{if @channel "Edit" "Add a new"}} notification channel</h2>
+<form id="channel-form" {{on "submit" this.submit}}>
+  <div class="mb-3">
+    <label for="serviceInput" class="form-label">Service name:</label>
+    <select id="serviceInput" name="service" class="form-select" {{on "change" this.setService}} required>
+      <option value="">Choose a service</option>
+      <option value="tgram" selected={{eq @channel.service "tgram"}}>Telegram</option>
+      <option value="ses" selected={{eq @channel.service "ses"}}>Email</option>
+      {{!-- <option value="sns" selected={{eq @channel.service "sns"}}>SMS</option> --}}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label for="pathInput" class="form-label">
+      Destination:
+      {{#if (or (eq @channel.service "tgram") (eq this.service "tgram"))}}
+      Telegram Chat ID
+      {{/if}}
+      {{#if (or (eq @channel.service "ses") (eq this.service "ses"))}}
+      Email Address
+      {{/if}}
+      {{#if (or (eq @channel.service "sns") (eq this.service "sns"))}}
+      Phone Number
+      {{/if}}
+    </label>
+    <Input @type="text" class="form-control" id="pathInput" name="path" @value={{@channel.path}} required />
+  </div>
+  {{#if (or (eq @channel.service "tgram") (eq this.service "tgram"))}}
+  <div class="alert alert-info" role="alert">
+    Get your Telegram chat ID by sending a message to <a href="https://t.me/crimeisdown_bot" target="_blank" rel="noopener noreferrer">@crimeisdown_bot</a>.
+  </div>
+  {{/if}}
+  <button type="submit" class="btn btn-primary">{{if @channel "Update" "Add"}} Channel</button>
+</form>
