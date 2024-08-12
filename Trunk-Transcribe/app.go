@@ -319,15 +319,15 @@ func handleTranscription(ctx context.Context, config *Config, r *http.Request) e
 	go func() {
 		rdioScannerSecret := os.Getenv("RDIO_SCANNER_API_KEY")
 		body := &bytes.Buffer{}
-		writer := multipart.NewWriter(body)
-		defer writer.Close()
+		writer := multipart.NewWriter(body)		
 		
 		writer.WriteField("key", rdioScannerSecret)
 		writer.WriteField("meta", string(callJson))
 		writer.WriteField("system", "2") // "eastbay" system
 		part, _ := writer.CreateFormFile("audio", filename)		
 		
-		go io.Copy(part, bytes.NewBuffer(data))
+		io.Copy(part, bytes.NewBuffer(data))
+		writer.Close()
 		
 		uri := "https://rdio-eastbay.fly.dev/api/trunk-recorder-call-upload"
 		res, err := http.Post(uri, writer.FormDataContentType(), body)
