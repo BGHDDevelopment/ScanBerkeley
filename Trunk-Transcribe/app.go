@@ -386,7 +386,13 @@ func dedupeDispatch(meta Metadata) (dupe bool) {
 // transcribeAndUpload transcribes the audio to text, posts the text to slack and persists the audio file to S3,
 func transcribeAndUpload(ctx context.Context, config *Config, key string, data []byte, metadata Metadata) (string, error) {
 
+<<<<<<< Updated upstream
 	msg, err := whisper(ctx, data)
+=======
+	// msg, err := whisper(ctx, data)
+	msg, err := gemini(ctx, data)
+
+>>>>>>> Stashed changes
 	if err == nil {
 		fmt.Println(key+": ", msg)
 	} else {
@@ -396,7 +402,11 @@ func transcribeAndUpload(ctx context.Context, config *Config, key string, data [
 	metadata.AudioText = msg
 	metadata.URL = fmt.Sprintf("https://trunk-transcribe.fly.dev/audio?link=%s", key)
 
+<<<<<<< Updated upstream
 	wg, gctx := errgroup.WithContext(ctx)	
+=======
+	wg, gctx := errgroup.WithContext(ctx)
+>>>>>>> Stashed changes
 
 	//upload to Cloudflare R2 (with s3 compatible api)
 	wg.Go(func() error { 
@@ -410,6 +420,51 @@ func transcribeAndUpload(ctx context.Context, config *Config, key string, data [
 	return msg, err
 }
 
+<<<<<<< Updated upstream
+=======
+func gemini(ctx context.Context, data []byte) (string, error) {
+
+	client, err := genai.NewClient(ctx, option.WithAPIKey(geminiApiKey))
+	if err != nil {
+		return "", err
+	}
+
+	prompt := strings.Join(append(streets, append(modifiers, terms...)...), ", ")
+	parts := []genai.Part{
+		genai.Blob{MIMEType: "audio/mp3", Data: data},
+		genai.Text("Transcribe the audio."),
+		genai.Text("Ignore silences."),
+		genai.Text("Here are some correction terms: " + terms),
+	}
+
+	model := client.GenerativeModel("gemini-1.5-pro")
+	// Generate content using the prompt.
+	resp, err := model.GenerateContent(ctx, parts...)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Handle the response of generated text
+
+	b, _ := json.MarshalIndent(resp, "", " ")
+	fmt.Println(string(b))
+
+	var buf strings.Builder
+
+	for _, c := range resp.Candidates {
+		if c.Content != nil {
+			for _, part := range c.Content.Parts {
+				fmt.Fprintf(&buf, "%v", part)
+				buf.WriteString("\n")
+			}
+		}
+	}
+
+	fmt.Println(buf.String())
+	return buf.String(), nil
+}
+
+>>>>>>> Stashed changes
 // whisper transcribes the audio with cloudflare Whisper
 func whisper(ctx context.Context, data []byte) (string, error) {
 	prompt := strings.Join(append(streets, append(modifiers, terms...)...), ", ")	
