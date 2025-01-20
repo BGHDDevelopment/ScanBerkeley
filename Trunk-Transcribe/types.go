@@ -152,6 +152,6 @@ type CloudflareWhisperInput struct {
 type CloudflareWhisperOutput struct {
 	Result   TranscriptionInfo `json:"result,omitempty"`
 	Success  bool              `json:"success,omitempty"`
-	Errors   interface{}          `json:"errors,omitempty"`
+	Errors   []interface{}     `json:"errors,omitempty"`
 	Messages []string          `json:"messages,omitempty"`
 }
