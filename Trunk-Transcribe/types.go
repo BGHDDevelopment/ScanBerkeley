@@ -1,6 +1,10 @@
 package main
 
-import "regexp"
+import (
+	"encoding/json"
+	"fmt"
+	"regexp"
+)
 
 // Structures to parse json of the form:
 //
@@ -167,8 +171,27 @@ type CloudflareWhisperOutput struct {
 	Messages []string          `json:"messages,omitempty"`
 }
 
+func NewTranscriptionRequest(name string, data, meta []byte) (*TranscriptionRequest, error) {
+	var metadata Metadata
+	err := json.Unmarshal(meta, &metadata)
+	if err != nil {
+		return nil, err
+	}
+	return &TranscriptionRequest{
+		Filename: name,
+		Data:     data,
+		Meta:     metadata,
+		MetaRaw:  meta,
+	}, nil
+}
+
 type TranscriptionRequest struct {
 	Filename string
 	Data     []byte
-	Meta     []byte
+	Meta     Metadata
+	MetaRaw  []byte
+}
+
+func (t *TranscriptionRequest) FilePath() string {
+	return fmt.Sprintf("%s/%d/%s", t.Meta.ShortName, t.Meta.Talkgroup, t.Filename)
 }

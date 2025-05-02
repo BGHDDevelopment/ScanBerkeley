@@ -1,5 +1,7 @@
 FROM golang:1.23.0
 
+RUN apt-get update -qq && apt-get install ffmpeg -y
+
 # Set destination for COPY
 WORKDIR /app
 
